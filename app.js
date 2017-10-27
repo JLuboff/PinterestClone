@@ -6,13 +6,14 @@ const express = require('express'),
       session = require('express-session'),
       MongoClient = require('mongodb').MongoClient,
       ObjectID = require('mongodb').ObjectID,
+      dotenv = require('dotenv').config(),
       port = process.env.PORT || 3000;
 
 const app = express();
 
 passport.use(new TwitterStrategy({
-  consumerKey: 'cpxEIrdjiyNfzzx1XMTLSFOd0',
-  consumerSecret: '31w6lSlMrAHKX2X8wvxDfSciIBiFGwsLjMwGrEAyWoKuSYZJFB',
+  consumerKey: process.env.TWITKEY,
+  consumerSecret: process.env.TWITSECRET,
   callbackURL: "http://127.0.0.1:3000/auth/twitter/callback"
 },
 (token, tokenSecret, profile, cb) => {
@@ -33,7 +34,7 @@ passport.deserializeUser((obj, cb) => {
 
 app.set('view engine', 'hbs');
 app.use(session({
-  secret: "potato",
+  secret: process.env.SESSSECRET,
   resave: true,
   saveUnitialized: true
 }));
