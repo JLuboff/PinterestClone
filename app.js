@@ -7,6 +7,7 @@ const express = require('express'),
       MongoClient = require('mongodb').MongoClient,
       ObjectID = require('mongodb').ObjectID,
       dotenv = require('dotenv').config(),
+      bodyParser = require('body-parser');
       port = process.env.PORT || 3000;
 
 const app = express();
@@ -38,10 +39,14 @@ app.use(session({
   resave: true,
   saveUnitialized: true
 }));
+app.use(bodyParser.urlencoded({ extended: true }));
 app.use(passport.initialize());
 app.use(passport.session());
 
-routes(app, passport /*db*/);
+MongoClient.connect(`${process.env.MONGOROUTE}`, (err, db) =>{
+
+routes(app, passport, db);
+})
 
 app.listen(port, () => {
   console.log(`Listening on port: ${port}`);
