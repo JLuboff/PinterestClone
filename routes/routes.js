@@ -9,14 +9,20 @@ module.exports = (app, passport, db) => {
 
   app.route('/').get((req, res) => {
     console.log(req.user);
+    let loggedIn = req.user != undefined ? true : false,
+        id = req.user != undefined ? req.user._json.id : undefined;
+
     db.collection('posts').find().toArray((err, doc) =>{
       if(err) throw err;
-      res.send(doc);
+      res.render('index.hbs', {loggedIn, id, doc});
     })
   })
 
   app.route('/usersPosts/:id').get((req, res) => {
-    db.collection('posts').find({})
+    db.collection('posts').find({'post.user': Number(req.params.id)}).toArray((err, data) => {
+      if(err) throw err;
+      res.send(data);
+    })
   })
 
   app.route('/createPost').get(isLogged, (req, res) => {
@@ -37,6 +43,11 @@ module.exports = (app, passport, db) => {
     res.redirect(`/usersPosts/${req.user.id}`);
   })
   app.route('/login').get(passport.authenticate('twitter'));
+
+  app.route('/logout').get((req, res) => {
+    req.logout();
+    res.redirect('/');
+  });
 
   app.route('/auth/twitter/callback').get(passport.authenticate('twitter', { failureRedirect: '/login'}), (req, res) => {
       res.redirect('/');
