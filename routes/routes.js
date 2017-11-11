@@ -1,4 +1,5 @@
-const bodyParser = require('body-parser');
+const bodyParser = require('body-parser'),
+      ObjectId = require('mongodb').ObjectId;
 
 module.exports = (app, passport, db) => {
   const isLogged = (req, res, next) => {
@@ -18,10 +19,19 @@ module.exports = (app, passport, db) => {
     })
   })
 
-  app.route('/usersPosts/:id').get((req, res) => {
+  app.route('/usersPosts/:id').get(isLogged, (req, res) => {
     db.collection('posts').find({'post.user': Number(req.params.id)}).toArray((err, data) => {
       if(err) throw err;
-      res.send(data);
+      res.render('userspost.hbs', {loggedIn: true, data})
+    })
+  })
+
+  app.route('/deletePost/:id').delete((req, res) => {
+    db.collection('posts').findOneAndDelete({_id: ObjectId(req.params.id)}).then(() => {
+      db.collection('posts').find({'post.user': Number(req.params.id)}).toArray((err, data) => {
+        if(err) throw err;
+        res.json(data);
+      })
     })
   })
 

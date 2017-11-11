@@ -50,8 +50,9 @@
           </ul>
         </div>
         <div class="col-md-8 col-md-offset-1">
+          <h4 class="text-center">Your Posts</h4>
           <div class="row masonry">
-        {{#each doc}}
+        {{#each data}}
           <div class="col-md-3 child">
             <div class="thumbnail">
               <img src="{{post.postImage}}" class="img-responsive" onerror="$(this).attr('src', 'https://www.jennybeaumont.com/wp-content/uploads/2015/03/placeholder.gif');">
@@ -62,7 +63,7 @@
                     <a href="/seeUserPosts/{{_id}}">{{post.username}}</a>
                   </div>
                   <div class="col-md-2 col-md-offset-6">
-                <a type="button" class="btn btn-primary" id="{{_id}}"><i class="fa fa-thumbs-o-up"></i> <span>{{post.likes}} </span></a>
+                <a type="button" class="btn btn-primary deletePost" id="{{_id}}"><i class="fa fa-trash-o"></i></a>
               </div>
             </div>
               </div>
@@ -79,12 +80,25 @@
     <script src="https://unpkg.com/masonry-layout@4/dist/masonry.pkgd.min.js"></script>
     <script>
     $(document).ready(()=>{
-
+      const masonry = () => {
         $('.masonry').masonry({
           itemSelector: '.child'
         });
+      };
 
+      $('.deletePost').click(e => {
 
+        console.log(e.target.id);
+      $.ajax({
+  			type: 'DELETE',
+  			url: `/deletePost/${e.target.id}`,
+  			success: data => {
+          console.log(data);
+        }
+        });
+      });
+
+      masonry();
     });
 </script>
   </html>
