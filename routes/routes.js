@@ -28,7 +28,7 @@ module.exports = (app, passport, db) => {
 
   app.route('/deletePost/:id').delete((req, res) => {
     db.collection('posts').findOneAndDelete({_id: ObjectId(req.params.id)}).then(() => {
-      db.collection('posts').find({'post.user': Number(req.params.id)}).toArray((err, data) => {
+      db.collection('posts').find({'post.user': Number(req.user._json.id)}).toArray((err, data) => {
         if(err) throw err;
         res.json(data);
       })
