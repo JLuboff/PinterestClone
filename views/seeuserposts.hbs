@@ -1,12 +1,12 @@
 <!DCOTYPE html>
 <html>
 <head>
-  <title>FCC Pinterest Clone</title>
+  <title>FCC Pinterest</title>
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootswatch/3.3.7/superhero/bootstrap.min.css">
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
-
 </head>
 <body>
+  <!--Modal for adding user posts -->
   <div class="modal fade" tabindex="-1" role="dialog" id="addPost">
     <div class="modal-dialog" role="document">
       <div class="modal-content">
@@ -32,7 +32,7 @@
         </div>
       </div>
     </div>
-
+    <!--Container for menu and grid -->
     <div class="container-fluid" style="margin-top: 50px;">
       <div class="row">
         <div class="col-md-1">
@@ -54,7 +54,7 @@
             {{#each data}}
             <div class="col-md-3 child">
               <div class="thumbnail">
-                <img src="{{post.postImage}}" class="img-responsive" onerror="$(this).attr('src', 'https://www.jennybeaumont.com/wp-content/uploads/2015/03/placeholder.gif');">
+                <img src="{{post.postImage}}" class="img-responsive" onerror="$(this).attr('src', 'https://cdn.glitch.com/7accb30d-5be4-43dd-b9ce-6a554aefba66%2Fplaceholder.png?1510696749293');">
                 <div class="caption">
                   <h5>{{post.postDescription}}</h5>
                   <div class="row">
@@ -62,7 +62,7 @@
                       <a href="/seeUserPosts/{{post.user}}">{{post.username}}</a>
                     </div>
                     <div class="col-md-2 col-md-offset-6">
-                  <a type="button" class="btn btn-primary" id="{{_id}}"><i class="fa fa-thumbs-o-up"></i> <span>{{post.likes}} </span></a>
+                      <button type="button" class="btn btn-primary postCounter" id="{{_id}}"><i class="fa fa-thumbs-o-up"></i> <span id="{{_id}}Count">{{post.likes}} </span></button>
                     </div>
                   </div>
                 </div>
@@ -73,19 +73,29 @@
         </div>
       </div>
     </div>
-<script src='https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.0/jquery.min.js'></script>
-<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
-<script src="https://unpkg.com/masonry-layout@4/dist/masonry.pkgd.min.js"></script>
-<script>
-$(document).ready(() => {
-	const masonry = () => {
-		$('#masonry').masonry({
-			itemSelector: '.child'
-		});
-	};
+    <script src='https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.0/jquery.min.js'></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <script src="https://unpkg.com/masonry-layout@4/dist/masonry.pkgd.min.js"></script>
+    <script>
+    $(document).ready(() => {
+      const masonry = () => {
+        $('#masonry').masonry({
+          itemSelector: '.child'
+        });
+      };
 
-	masonry();
-});
-</script>
+      $(document).on('click', '.postCounter', function(e){
+        $.ajax({
+          type: 'POST',
+          url: `/postCounter/${e.target.id}`,
+          success: data => {
+            $(`#${data._id}Count`).html(data.post.likes);
+          }
+        })
+      });
+
+      masonry();
+    });
+  </script>
 </body>
 </html>

@@ -1,102 +1,96 @@
 <!DCOTYPE html>
 <html>
 <head>
-  <title>FCC Pinterest Clone</title>
+  <title>FCC Pinterest</title>
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootswatch/3.3.7/superhero/bootstrap.min.css">
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
-
 </head>
 <body>
-<div class="modal fade" tabindex="-1" role="dialog" id="addPost">
-  <div class="modal-dialog" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-        <h4 class="modal-title">Add Post</h4>
-      </div>
-      <form method="post" action="/createPost">
-      <div class="modal-body">
-        <div class="form-group">
-        <label>Image URL: </label>
-        <input type="text" name="imageUrl" class="form-control" required />
-      </div>
-      <div class="form-group">
-        <label>Description: </label>
-        <input type="text" name="description" class="form-control" required />
-      </div>
-      </div>
-      <div class="modal-footer">
-        <button type="submit" class="btn btn-primary"> Post </a>
-      </form>
+  <!--Modal for adding posts -->
+  <div class="modal fade" tabindex="-1" role="dialog" id="addPost">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+          <h4 class="modal-title">Add Post</h4>
+        </div>
+        <form method="post" action="/createPost">
+          <div class="modal-body">
+            <div class="form-group">
+              <label>Image URL: </label>
+              <input type="text" name="imageUrl" class="form-control" required />
+            </div>
+            <div class="form-group">
+              <label>Description: </label>
+              <input type="text" name="description" class="form-control" required />
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="submit" class="btn btn-primary"> Post </a>
+            </form>
+          </div>
+        </div>
       </div>
     </div>
-  </div>
-</div>
-
-
-  <div class="container-fluid" style="margin-top: 50px;">
-    <div class="row">
-      <div class="col-md-1">
-        <ul class="nav nav-pills nav-stacked">
-          <li>FCC Pinterest</li>
-          <li><a href="/">Home</a></li>
-          {{#if loggedIn}}
-          <li><a href="/usersPosts/{{id}}">Your Posts</a></li>
-          <li><a href="#addPost" data-toggle="modal">Add Post</a></li>
-          <li><a href="/logout">Logout</a></li>
-          {{else}}
-          <li><a href="/login">Login</a></li>
-          {{/if}}
+    <!--Container for menu and grid -->
+    <div class="container-fluid" style="margin-top: 50px;">
+      <div class="row">
+        <div class="col-md-1">
+          <ul class="nav nav-pills nav-stacked">
+            <li>FCC Pinterest</li>
+            <li><a href="/">Home</a></li>
+            {{#if loggedIn}}
+            <li><a href="/usersPosts/{{id}}">Your Posts</a></li>
+            <li><a href="#addPost" data-toggle="modal">Add Post</a></li>
+            <li><a href="/logout">Logout</a></li>
+            {{else}}
+            <li><a href="/login">Login</a></li>
+            {{/if}}
           </ul>
         </div>
         <div class="col-md-8 col-md-offset-1">
           <div class="row masonry">
-        {{#each doc}}
-          <div class="col-md-3 child">
-            <div class="thumbnail">
-              <img src="{{post.postImage}}" class="img-responsive" onerror="$(this).attr('src', 'https://www.jennybeaumont.com/wp-content/uploads/2015/03/placeholder.gif');">
-              <div class="caption">
-                <h5>{{post.postDescription}}</h5>
-                <div class="row">
-                  <div class="col-md-2">
-                    <a href="/seeUserPosts/{{post.user}}">{{post.username}}</a>
+            {{#each doc}}
+            <div class="col-md-3 child">
+              <div class="thumbnail">
+                <img src="{{post.postImage}}" class="img-responsive" onerror="$(this).attr('src', 'https://www.jennybeaumont.com/wp-content/uploads/2015/03/placeholder.gif');">
+                <div class="caption">
+                  <h5>{{post.postDescription}}</h5>
+                  <div class="row">
+                    <div class="col-md-2">
+                      <a href="/seeUserPosts/{{post.user}}">{{post.username}}</a>
+                    </div>
+                    <div class="col-md-2 col-md-offset-6">
+                      <button type="button" class="btn btn-primary postCounter" id="{{_id}}"><i class="fa fa-thumbs-o-up"></i> <span id="{{_id}}Count">{{post.likes}} </span></button>
+                    </div>
                   </div>
-                  <div class="col-md-2 col-md-offset-6">
-                <button type="button" class="btn btn-primary postCounter" id="{{_id}}"><i class="fa fa-thumbs-o-up"></i> <span id="{{_id}}Count">{{post.likes}} </span></button>
+                </div>
               </div>
             </div>
-              </div>
-            </div>
+            {{/each}}
           </div>
-          {{/each}}
         </div>
-      </div>
-
       </div>
     </div>
     <script src='https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.0/jquery.min.js'></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
     <script src="https://unpkg.com/masonry-layout@4/dist/masonry.pkgd.min.js"></script>
     <script>
-    $(document).ready(()=>{
-
+      $(document).ready(() => {
         $('.masonry').masonry({
           itemSelector: '.child'
         });
 
-        $(document).on('click', '.postCounter', function(e){
-          console.log(e.target.id);
+        $(document).on('click', '.postCounter', function(e) {
           $.ajax({
             type: 'POST',
             url: `/postCounter/${e.target.id}`,
             success: data => {
-              console.log(data);
               $(`#${data._id}Count`).html(data.post.likes);
             }
-          })
-        })
-
-
-    });
-</script>
-  </html>
+          });
+        });
+      });
+  </script>
+</body>
+</html>

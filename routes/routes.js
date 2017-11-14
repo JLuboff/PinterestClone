@@ -43,7 +43,7 @@ module.exports = (app, passport, db) => {
     })
   })
 
-  app.route('/postCounter/:id').post((req, res) => {
+  app.route('/postCounter/:id').post(isLogged, (req, res) => {
     console.log(req.params.id);
     let id = req.params.id;
     db.collection('posts').aggregate([{$match: {_id: ObjectId(id)}}, {$unwind: '$post.likedBy'}, {$match: {'post.likedBy': req.user._json.id}}], (err, doc) => {
