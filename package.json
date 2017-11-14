@@ -4,6 +4,7 @@
   "description": "A pinterest clone for FreeCodeCamp",
   "main": "app.js",
   "scripts": {
+    "start": "node app.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "Jason Luboff",
