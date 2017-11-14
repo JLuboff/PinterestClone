@@ -50,20 +50,19 @@ module.exports = (app, passport, db) => {
       if(err) throw err;
       console.log(doc);
       if(doc.length){
-        db.collection('posts').findOneAndUpdate({_id: ObjectId(id)}, { $inc: {'post.likes': -1}, $pull: {'post.likedBy' : req.user._json.id}}, {returnNewDocument: true}, (err, doc) => {
+        db.collection('posts').findOneAndUpdate({_id: ObjectId(id)}, { $inc: {'post.likes': -1}, $pull: {'post.likedBy' : req.user._json.id}}, {upsert: true, returnOriginal: false}, (err, doc) => {
           if(err) throw err;
           console.log('Found: ' + JSON.stringify(doc.value));
           res.json(doc.value);
         })
       } else {
-        db.collection('posts').findOneAndUpdate({_id: ObjectId(id)}, { $inc: {'post.likes': 1}, $addToSet: {'post.likedBy': req.user._json.id}}, {returnNewDocument: true}, (err, doc) => {
+        db.collection('posts').findOneAndUpdate({_id: ObjectId(id)}, { $inc: {'post.likes': 1}, $addToSet: {'post.likedBy': req.user._json.id}}, {upsert: true, returnOriginal: false}, (err, doc) => {
           if(err) throw err;
           console.log('Not Found: ' + JSON.stringify(doc.value));
           res.json(doc.value);
         });
       }
     })
-
   })
 
   app.route('/createPost').get(isLogged, (req, res) => {
