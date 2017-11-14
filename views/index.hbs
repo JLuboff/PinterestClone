@@ -59,10 +59,10 @@
                 <h5>{{post.postDescription}}</h5>
                 <div class="row">
                   <div class="col-md-2">
-                    <a href="/seeUserPosts/{{_id}}">{{post.username}}</a>
+                    <a href="/seeUserPosts/{{post.user}}">{{post.username}}</a>
                   </div>
                   <div class="col-md-2 col-md-offset-6">
-                <a type="button" class="btn btn-primary" id="{{_id}}"><i class="fa fa-thumbs-o-up"></i> <span>{{post.likes}} </span></a>
+                <button type="button" class="btn btn-primary postCounter" id="{{_id}}"><i class="fa fa-thumbs-o-up"></i> <span id="{{_id}}Count">{{post.likes}} </span></button>
               </div>
             </div>
               </div>
@@ -83,6 +83,18 @@
         $('.masonry').masonry({
           itemSelector: '.child'
         });
+
+        $(document).on('click', '.postCounter', function(e){
+          console.log(e.target.id);
+          $.ajax({
+            type: 'POST',
+            url: `/postCounter/${e.target.id}`,
+            success: data => {
+              console.log(data);
+              $(`#${data._id}Count`).html(data.post.likes);
+            }
+          })
+        })
 
 
     });

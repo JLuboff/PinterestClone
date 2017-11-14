@@ -6,7 +6,6 @@ module.exports = (app, passport, db) => {
     if(req.isAuthenticated()) return next();
     return res.redirect('/login');
   };
-//  const Posts = db.collection('posts');
 
   app.route('/').get((req, res) => {
     console.log(req.user);
@@ -26,13 +25,45 @@ module.exports = (app, passport, db) => {
     })
   })
 
+  app.route('/seeUserPosts/:id').get((req, res) => {
+    let loggedIn = req.user != undefined ? true : false;
+    db.collection('posts').find({'post.user': Number(req.params.id)}).toArray((err, data) => {
+      if(err) throw err;
+      res.render('seeuserposts.hbs', {loggedIn, data})
+    })
+  })
+
   app.route('/deletePost/:id').delete((req, res) => {
     db.collection('posts').findOneAndDelete({_id: ObjectId(req.params.id)}).then(() => {
       db.collection('posts').find({'post.user': Number(req.user._json.id)}).toArray((err, data) => {
         if(err) throw err;
+
         res.json(data);
       })
     })
+  })
+
+  app.route('/postCounter/:id').post((req, res) => {
+    console.log(req.params.id);
+    let id = req.params.id;
+    db.collection('posts').aggregate([{$match: {_id: ObjectId(id)}}, {$unwind: '$post.likedBy'}, {$match: {'post.likedBy': req.user._json.id}}], (err, doc) => {
+      if(err) throw err;
+      console.log(doc);
+      if(doc.length){
+        db.collection('posts').findOneAndUpdate({_id: ObjectId(id)}, { $inc: {'post.likes': -1}, $pull: {'post.likedBy' : req.user._json.id}}, {returnNewDocument: true}, (err, doc) => {
+          if(err) throw err;
+          console.log('Found: ' + JSON.stringify(doc.value));
+          res.json(doc.value);
+        })
+      } else {
+        db.collection('posts').findOneAndUpdate({_id: ObjectId(id)}, { $inc: {'post.likes': 1}, $addToSet: {'post.likedBy': req.user._json.id}}, {returnNewDocument: true}, (err, doc) => {
+          if(err) throw err;
+          console.log('Not Found: ' + JSON.stringify(doc.value));
+          res.json(doc.value);
+        });
+      }
+    })
+
   })
 
   app.route('/createPost').get(isLogged, (req, res) => {
