@@ -6,7 +6,7 @@ const express = require('express'),
       session = require('express-session'),
       MongoClient = require('mongodb').MongoClient,
       ObjectID = require('mongodb').ObjectID,
-      bodyParser = require('body-parser');
+      bodyParser = require('body-parser'),
       port = process.env.PORT || 3000;
 
 const app = express();
@@ -20,10 +20,10 @@ passport.use(
 		},
 		(token, tokenSecret, profile, cb) => {
 			if (profile) {
-				user = profile;
+				let user = profile;
 				return cb(null, user);
 			} else {
-				return done(null, false);
+				return cb(null, false);
 			}
 		}
 	)
@@ -44,6 +44,7 @@ app.use(
 		saveUnitialized: true
 	})
 );
+app.use(flash());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(passport.initialize());
 app.use(passport.session());
