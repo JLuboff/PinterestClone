@@ -10,14 +10,13 @@ module.exports = (app, passport, db) => {
 	app.route('/').get((req, res) => {
 		let loggedIn = req.user != undefined ? true : false,
 			id = req.user != undefined ? req.user._json.id : undefined,
-      notLogged = req.flash('notLogged');
 
 		db
 			.collection('posts')
 			.find()
 			.toArray((err, doc) => {
 				if (err) throw err;
-				res.render('index.hbs', { loggedIn, id, doc, notLogged });
+				res.render('index.hbs', { loggedIn, id, doc });
 			});
 	});
 
@@ -117,14 +116,13 @@ module.exports = (app, passport, db) => {
 
 	app.route('/seeUserPosts/:id').get((req, res) => {
 		let loggedIn = req.user != undefined ? true : false,
-        notLogged = req.flash('notLogged');
 
 		db
 			.collection('posts')
 			.find({ 'post.user': Number(req.params.id) })
 			.toArray((err, data) => {
 				if (err) throw err;
-				res.render('seeuserposts.hbs', { loggedIn, data, notLogged });
+				res.render('seeuserposts.hbs', { loggedIn, data});
 			});
 	});
 
