@@ -44,7 +44,6 @@ app.use(
 		saveUnitialized: true
 	})
 );
-app.use(flash());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(passport.initialize());
 app.use(passport.session());
