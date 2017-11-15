@@ -9,7 +9,7 @@ module.exports = (app, passport, db) => {
 
 	app.route('/').get((req, res) => {
 		let loggedIn = req.user != undefined ? true : false,
-			id = req.user != undefined ? req.user._json.id : undefined,
+			id = req.user != undefined ? req.user._json.id : undefined;
 
 		db
 			.collection('posts')
@@ -115,7 +115,7 @@ module.exports = (app, passport, db) => {
 	});
 
 	app.route('/seeUserPosts/:id').get((req, res) => {
-		let loggedIn = req.user != undefined ? true : false,
+		let loggedIn = req.user != undefined ? true : false;
 
 		db
 			.collection('posts')
