@@ -114,25 +114,28 @@ module.exports = (app, passport, db) => {
 			);
 	});
 
-	app.route('/seeUserPosts/:id').get((req, res) => {
-		let loggedIn = req.user != undefined ? true : false;
+  app.route('/seeUserPosts/:id').get((req, res) => {
+		let loggedIn = req.user != undefined ? true : false,
+        id = req.user != undefined ? req.user._json.id : undefined;
 
 		db
 			.collection('posts')
 			.find({ 'post.user': Number(req.params.id) })
 			.toArray((err, data) => {
 				if (err) throw err;
-				res.render('seeuserposts.hbs', { loggedIn, data});
+				res.render('seeuserposts.hbs', { loggedIn, data, id});
 			});
 	});
 
 	app.route('/usersPosts/:id').get(isLogged, (req, res) => {
+    let id = req.user != undefined ? req.user._json.id : undefined;
+
 		db
 			.collection('posts')
 			.find({ 'post.user': Number(req.params.id) })
 			.toArray((err, data) => {
 				if (err) throw err;
-				res.render('userspost.hbs', { loggedIn: true, data });
+				res.render('userspost.hbs', { loggedIn: true, data, id });
 			});
 	});
 };
