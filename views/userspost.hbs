@@ -35,7 +35,7 @@
     <!--Page container with menu and image grid -->
     <div class="container-fluid" style="margin-top: 50px;">
       <div class="row">
-        <div class="col-md-1">
+        <div class="col-md-1 col-sm-2">
           <ul class="nav nav-pills nav-stacked">
             <li>FCC Pinterest</li>
             <li><a href="/">Home</a></li>
@@ -48,20 +48,20 @@
             {{/if}}
           </ul>
         </div>
-        <div class="col-md-8 col-md-offset-1">
+        <div class="col-md-8 col-md-offset-1 col-sm-10">
           <h4 class="text-center">Your Posts</h4>
           <div class="row" id="masonry">
             {{#each data}}
-            <div class="col-md-3 child">
+            <div class="col-md-3 child col-sm-4">
               <div class="thumbnail">
                 <img src="{{post.postImage}}" class="img-responsive" onerror="$(this).attr('src', 'https://cdn.glitch.com/7accb30d-5be4-43dd-b9ce-6a554aefba66%2Fplaceholder.gif?1510702209312');">
                 <div class="caption">
                   <h5>{{post.postDescription}}</h5>
                   <div class="row">
-                    <div class="col-md-2">
+                    <div class="col-md-2 col-sm-2">
                       <a href="/seeUserPosts/{{_id}}">{{post.username}}</a>
                     </div>
-                    <div class="col-md-2 col-md-offset-6">
+                    <div class="col-md-2 col-md-offset-6 col-sm-2 col-sm-offset-5">
                       <button type="button" class="btn btn-primary deletePost" id="{{_id}}"><i class="fa fa-trash-o"></i></button>
                     </div>
                   </div>
@@ -93,17 +93,17 @@ $(document).ready(() => {
 				data.forEach(el => {
 					$('#masonry').append(
 						`
-            <div class="col-md-3 child">
+            <div class="col-md-3 child col-sm-4">
             <div class="thumbnail">
             <img src="${el.post
 							.postImage}" class="img-responsive" onerror="$(this).attr('src', 'https://cdn.glitch.com/7accb30d-5be4-43dd-b9ce-6a554aefba66%2Fplaceholder.gif?1510702209312');">
               <div class="caption">
               <h5>${el.post.postDescription}</h5>
               <div class="row">
-              <div class="col-md-2">
+              <div class="col-md-2 col-sm-2">
               <a href="/seeUserPosts/${el._id}">${el.post.username}</a>
               </div>
-              <div class="col-md-2 col-md-offset-6">
+              <div class="col-md-2 col-md-offset-6 col-sm-2 col-sm-offset-5">
               <button type="button" class="btn btn-primary deletePost" id="${el._id}"><i class="fa fa-trash-o"></i></button>
               </div>
               </div>
