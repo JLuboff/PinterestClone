@@ -10,7 +10,7 @@ const express = require('express'),
       port = process.env.PORT || 3000;
 
 const app = express();
-
+MongoClient.connect(`${process.env.MONGOROUTE}`, (err, db) => {
 passport.use(
 	new TwitterStrategy(
 		{
@@ -48,10 +48,11 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(passport.initialize());
 app.use(passport.session());
 
-MongoClient.connect(`${process.env.MONGOROUTE}`, (err, db) => {
+
 	routes(app, passport, db);
-});
+
 
 app.listen(port, () => {
 	console.log(`Listening on port: ${port}`);
+});
 });
